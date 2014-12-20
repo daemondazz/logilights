@@ -86,7 +86,7 @@ assign wr_lo = wr && !wr_addr[11];
 dpram8192x12 dpram8192x12_hi
 (
   .clka  (wr_clk),
-  .wea   (wr_lo),
+  .wea   (wr_hi),
   .addra ({wr_addr[13:12], wr_addr[10:0]}),
   .dina  (wr_data),
   .clkb  (clk),
