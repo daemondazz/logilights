@@ -3,6 +3,9 @@
 TARGET_DATE = [2014, 12, 25]
 EVENT_NAME = ['SLEEP', 'LEFT']
 
+ROWS_COUNTER = 1
+ROWS_EVENT = 2
+
 import sys
 import os, os.path
 from datetime import datetime
@@ -38,21 +41,21 @@ class DaysToGoText(Panel):
             EVENT_NAME[0] += 'S'
 
         # Determine the size for the fonts
-        self.calculate_font(days_remaining, key='counter', rows=1)
+        self.calculate_font(days_remaining, key='counter', rows=ROWS_COUNTER)
         for word in EVENT_NAME:
-            self.calculate_font(word, key='event_name', rows=2)
+            self.calculate_font(word, key='event_name', rows=ROWS_EVENT)
 
         # Indent from the left edge of the screen
         h_offset = 5
 
         # Render number of days remaining
-        rendered = self.render_text(days_remaining, h_offset, 0, 'counter', COLOUR_ARRAY['RED'], 1)
+        rendered = self.render_text(days_remaining, h_offset, 0, 'counter', COLOUR_ARRAY['RED'], ROWS_COUNTER)
         h_offset += rendered.width + 1
 
         # Render the event name
         v_offset = 2
         for word in EVENT_NAME:
-            rendered = self.render_text(word, h_offset, v_offset, 'event_name', COLOUR_ARRAY['GREEN'], 2)
+            rendered = self.render_text(word, h_offset, v_offset, 'event_name', COLOUR_ARRAY['GREEN'], ROWS_EVENT)
             v_offset += rendered.height + 1
 
         # Write Levels
