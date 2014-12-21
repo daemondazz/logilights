@@ -86,7 +86,7 @@ class DaysToGoText(Panel):
 
 
 if __name__ == '__main__':
-    p = DaysToGoText(debug=True)
+    p = DaysToGoText()
     while True:
         p.render_panel()
         sleep(1)
