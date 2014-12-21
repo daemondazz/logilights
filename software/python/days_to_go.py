@@ -10,7 +10,8 @@ ROWS_DATETIME = 4
 import sys
 import os, os.path
 from datetime import datetime
-from time import sleep
+from math import ceil, floor
+from time import sleep, time
 
 from logilights.font import Font
 from logilights.panel import COLOUR_ARRAY, DISPLAY_HEIGHT, DISPLAY_WIDTH
@@ -110,4 +111,5 @@ if __name__ == '__main__':
     p = DaysToGoText()
     while True:
         p.render_panel()
-        sleep(1)
+        now = time()
+        sleep(0.5 * ceil(2.0 * now) - now)
