@@ -31,7 +31,7 @@ class DaysToGoText(Panel):
             self.pixel_buffer.append([0]*DISPLAY_WIDTH)
 
         # Calculate how many days remaining until the target date
-        days_remaining = str((datetime(*TARGET_DATE) - datetime.today()).days)
+        days_remaining = str((datetime(*TARGET_DATE) - datetime.today()).days+1)
 
         # Pluralise firt word of event name
         if int(days_remaining) != 1 and EVENT_NAME[0][-1] != 'S':
