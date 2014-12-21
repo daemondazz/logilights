@@ -1,8 +1,15 @@
-import logi
 import sys
 from struct import pack, unpack
 from random import shuffle
 from time import sleep, time
+
+# Try to import logi, if we can't assume we're developing on a non BBB machine
+# and force debug mode on
+try:
+    import logi
+    DEBUG = False
+except ImportError:
+    DEBUG = True
 
 
 DISPLAY_WIDTH = 94
@@ -36,7 +43,7 @@ class Panel(object):
     def __init__(self, debug=False):
         self.active_buffer = 0
         self.pixel_buffer = []
-        self.debug = debug
+        self.debug = DEBUG or debug
 
     def blank_display(self):
         if self.debug:
