@@ -12,14 +12,15 @@ class ScrollingText(Panel):
     def __init__(self, colour, font_file, text, *args, **kwargs):
         super(ScrollingText, self).__init__(*args, **kwargs)
         self.colour = COLOUR_ARRAY[colour]
-        self.fnt = Font(font_file, 28)
         self.offset = 0
+        self.calculate_font(font_file, text, size=DISPLAY_HEIGHT)
 
-        # Work out how many spaces to add before and after for pre/post roll
+    def calculate_font(self, font_file, text, size):
+        self.fnt = Font(font_file, size)
         num_spaces = (DISPLAY_WIDTH / self.fnt.render_text(' ').width) + 1
-
-        # Pre-render the text
         self.data = self.fnt.render_text(' ' * num_spaces + text + ' ' * num_spaces)
+        if self.data.height > DISPLAY_HEIGHT:
+            self.calculate_font(font_file, text, size-1)
 
     def first_frame(self):
         self.blank_display()
