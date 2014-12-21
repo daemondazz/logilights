@@ -77,7 +77,9 @@ class DaysToGoText(Panel):
         gap_above = int((DISPLAY_HEIGHT/rows - data.height) / 2)
         # If h_offset is negative, we're aligning on the right edge
         if h_offset < 0:
-            h_offset = DISPLAY_WIDTH - data.width - abs(h_offset)
+            h_offset = DISPLAY_WIDTH - data.width - abs(h_offset) + 1
+        if v_offset < 0:
+            v_offset = DISPLAY_HEIGHT - data.height - abs(v_offset) + 1
         for row in xrange(data.height):
             row_num = row + v_offset + gap_above
             row_start = row * data.width
