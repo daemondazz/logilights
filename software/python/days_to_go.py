@@ -40,11 +40,7 @@ class DaysToGoText(Panel):
         # Calculate how many days remaining until the target date
         days_remaining = str((datetime(*TARGET_DATE) - datetime.today()).days+1)
         current_date = datetime.now().strftime('%d/%m')
-        if self.show_colon:
-            current_time = datetime.now().strftime('%H:%M')
-        else:
-            current_time = datetime.now().strftime('%H.%M')
-        self.show_colon = not self.show_colon
+        current_time = datetime.now().strftime('%H:%M')
 
         # Pluralise firt word of event name
         if int(days_remaining) != 1 and EVENT_NAME[0][-1] != 'S':
@@ -73,6 +69,14 @@ class DaysToGoText(Panel):
         # Render the current date time
         rendered1 = self.render_text(current_time, -1, -1, 'date_time', COLOUR_ARRAY['YELLOW'], ROWS_DATETIME)
         rendered2 = self.render_text(current_date, -1, -1-rendered1.height-1, 'date_time', COLOUR_ARRAY['YELLOW'], ROWS_DATETIME)
+
+        # Blank out the dots in the time every second refresh
+        # Do this be redrawing the last 3 characters of the time in black and
+        # then the last two characters in yellow again
+        if self.show_colon:
+            self.render_text(current_time[2:], -1, -1, 'date_time', COLOUR_ARRAY['BLACK'], ROWS_DATETIME)
+            self.render_text(current_time[3:], -1, -1, 'date_time', COLOUR_ARRAY['YELLOW'], ROWS_DATETIME)
+        self.show_colon = not self.show_colon
 
         # Write Levels
         self.write_levels()
