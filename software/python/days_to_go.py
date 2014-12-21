@@ -39,7 +39,7 @@ class DaysToGoText(Panel):
 
         # Calculate how many days remaining until the target date
         days_remaining = str((datetime(*TARGET_DATE) - datetime.today()).days+1)
-        current_date = datetime.now().strftime('%d/%m')
+        current_date = datetime.now().strftime('%d-%m')
         current_time = datetime.now().strftime('%H:%M')
 
         # Pluralise firt word of event name
