@@ -1,4 +1,5 @@
 import logi
+import sys
 from struct import pack, unpack
 from random import shuffle
 from time import sleep, time
@@ -32,11 +33,15 @@ COLOURS = COLOUR_ARRAY.values()
 
 
 class Panel(object):
-    def __init__(self):
+    def __init__(self, debug=False):
         self.active_buffer = 0
         self.pixel_buffer = []
+        self.debug = debug
 
     def blank_display(self):
+        if self.debug:
+            return True
+
         self.pixel_buffer = []
 
         # Fill it with zeros
@@ -47,6 +52,8 @@ class Panel(object):
         self.write_levels()
 
     def write_levels(self):
+        if self.debug:
+            return self.write_levels_debug()
 
         # Switch the active write buffer
         if self.active_buffer == 0:
@@ -68,6 +75,18 @@ class Panel(object):
         else:
             self.write_word(FPGA_PANEL_BUFFER_REG, 0x0001)
             self.active_buffer = 0
+
+    def write_levels_debug(self):
+        sys.stdout.write('+' + '-'*DISPLAY_WIDTH + '+\n')
+        for row in xrange(DISPLAY_HEIGHT):
+            sys.stdout.write('|')
+            for col in xrange(DISPLAY_WIDTH):
+                if self.pixel_buffer[row][col]:
+                    sys.stdout.write('X')
+                else:
+                    sys.stdout.write(' ')
+            sys.stdout.write('|\n')
+        print '+' + '-'*DISPLAY_WIDTH + '+\n'
 
     def write_word(self, addr, word):
         logi.logiWrite(addr, self._fmt_tuple(word))
