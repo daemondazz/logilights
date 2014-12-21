@@ -160,10 +160,10 @@ begin
       // for 25MHz clock, use 480-1,  960-1, 1920-1, 3840-1 below
       // for 50MHz clock, use 960-1, 1920-1, 3840-1, 7680-1 below
       case (rd_bit)
-        0: timer <= 191;
-        1: timer <= 383;
-        2: timer <= 767;
-        3: timer <= 1535;
+        0: timer <= 479;
+        1: timer <= 959;
+        2: timer <= 1919;
+        3: timer <= 7679;
       endcase
     end else begin
       timer <= timer - 1;
