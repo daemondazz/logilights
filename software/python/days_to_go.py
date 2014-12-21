@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 TARGET_DATE = [2014, 12, 25]
+EVENT_NAME = ['SLEEP', 'LEFT']
 
 import sys
 import os, os.path
@@ -19,6 +20,8 @@ font_file = os.path.join(os.path.dirname(__file__),
 class DaysToGoText(Panel):
     def __init__(self, *args, **kwargs):
         super(DaysToGoText, self).__init__(*args, **kwargs)
+        self.font_cache = {}
+        self.font_file = font_file
 
     def render_panel(self):
 
@@ -30,48 +33,57 @@ class DaysToGoText(Panel):
         # Calculate how many days remaining until the target date
         days_remaining = str((datetime(*TARGET_DATE) - datetime.today()).days)
 
-        # Determine the size for the counter and render it at the left edge of the panel
-        counter_size, counter_font = self.get_font(font_file, days_remaining, 1, DISPLAY_HEIGHT)
-        days_string = self.render_text(counter_font, 0, 0, COLOUR_ARRAY['RED'], days_remaining)
-#        h_offset = self.render_string(counter_font, 0, 0, 
-#
-#        # Determine best font size to use
-#        font1 = self.calculate_font(font_file, text1, DISPLAY_HEIGHT/2)
-#        font2 = self.calculate_font(font_file, text2, DISPLAY_HEIGHT/2)
-#        self.fnt = Font(font_file,  min([font1, font2]))
-#
-#        # Render line 1
-#        self.render_line(0, COLOUR_ARRAY.get(colour1, 'RED'), text1)
-#
-#        # Render line 2
-#        self.render_line(16, COLOUR_ARRAY.get(colour2, 'RED'), text2)
-#
-#        # Save the current frame to the prerender spot in the first MESSAGE
-#        MESSAGES[0][5] = self.pixel_buffer
+        # Pluralise firt word of event name
+        if int(days_remaining) != 1 and EVENT_NAME[0][-1] != 'S':
+            EVENT_NAME[0] += 'S'
+
+        # Determine the size for the fonts
+        self.calculate_font(days_remaining, key='counter', rows=1)
+        for word in EVENT_NAME:
+            self.calculate_font(word, key='event_name', rows=2)
+
+        # Indent from the left edge of the screen
+        h_offset = 5
+
+        # Render number of days remaining
+        rendered = self.render_text(days_remaining, h_offset, 0, 'counter', COLOUR_ARRAY['RED'], 1)
+        h_offset += rendered.width + 1
+
+        # Render the event name
+        v_offset = 2
+        for word in EVENT_NAME:
+            rendered = self.render_text(word, h_offset, v_offset, 'event_name', COLOUR_ARRAY['GREEN'], 2)
+            v_offset += rendered.height + 1
 
         # Write Levels
         self.write_levels()
 
-    def get_font(self, font_file, text, rows, size):
+    def calculate_font(self, text, key, rows, size=None, font_file=None):
+        if font_file is None:
+            font_file = self.font_file
+        if size is None:
+            size = DISPLAY_HEIGHT / rows
         fnt = Font(font_file, size)
         data = fnt.render_text(text)
         if data.height > (DISPLAY_HEIGHT / rows) or data.width > DISPLAY_WIDTH:
-            size = self.calculate_font(font_file, text, rows, size-1)
-        return size, fnt
+            size = self.calculate_font(text, key, rows, size-1)
+        self.font_cache[key] = fnt
 
-    def render_text(self, font_obj, h_offset, v_offset, colour, text):
-        data = self.fnt.render_text(text)
-        gap_above = int((DISPLAY_HEIGHT/2 - data.height) / 2)
-        for row in range(data.height):
-            row_num = row + offset + gap_above
-            gap_left = int((DISPLAY_WIDTH - data.width) / 2)
+    def render_text(self, text, h_offset, v_offset, key, colour, rows):
+        data = self.font_cache[key].render_text(text)
+        gap_above = int((DISPLAY_HEIGHT/rows - data.height) / 2)
+        # If h_offset is negative, we're aligning on the right edge
+        if h_offset < 0:
+            h_offset = DISPLAY_WIDTH - data.width - abs(h_offset)
+        for row in xrange(data.height):
+            row_num = row + v_offset + gap_above
             row_start = row * data.width
-            row_end = row_start + DISPLAY_WIDTH
-            pixels = data.pixels[row_start:row_end]
+            pixels = data.pixels[row_start:row_start+data.width]
             for col in xrange(data.width):
                 if pixels[col]:
-                    self.pixel_buffer[row_num][gap_left+col] = colour
-        
+                    self.pixel_buffer[row_num][h_offset+col] = colour
+        return data
+
 
 if __name__ == '__main__':
     p = DaysToGoText(debug=True)
