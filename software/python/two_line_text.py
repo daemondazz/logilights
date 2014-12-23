@@ -28,15 +28,13 @@ class TwoLineText(Panel):
         global MESSAGES
 
         # If the frame has been pre-rendered, just show it
-        if prerendered:
+        if not prerendered is None:
             self.pixel_buffer = prerendered
             self.write_levels()
             return True
 
         # Blank the screen
-        self.pixel_buffer = []
-        for row in xrange(DISPLAY_HEIGHT):
-            self.pixel_buffer.append([0]*DISPLAY_WIDTH)
+        self.pixel_buffer = self.get_blank_buffer()
 
         # Determine the location of the font file, so we don't have to specify
         # the full path above
@@ -77,7 +75,7 @@ class TwoLineText(Panel):
             pixels = data.pixels[row_start:row_end]
             for col in xrange(data.width):
                 if pixels[col]:
-                    self.pixel_buffer[row_num][gap_left+col] = colour
+                    self.pixel_buffer[row_num,gap_left+col] = colour
         
 
 if __name__ == '__main__':
