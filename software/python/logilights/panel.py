@@ -64,7 +64,7 @@ class Panel(object):
         self.write_levels()
 
     def get_blank_buffer(self):
-        return numpy.zeros(shape=(DISPLAY_HEIGHT, DISPLAY_WIDTH))
+        return numpy.zeros(shape=(DISPLAY_HEIGHT, DISPLAY_WIDTH), dtype=int)
 
     def write_levels(self):
         if self.debug:
