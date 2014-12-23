@@ -34,9 +34,7 @@ class DaysToGoText(Panel):
     def render_panel(self):
 
         # Build the pixel buffer big enough for the screen
-        self.pixel_buffer = []
-        for row in xrange(DISPLAY_HEIGHT):
-            self.pixel_buffer.append([0]*DISPLAY_WIDTH)
+        self.pixel_buffer = self.get_blank_buffer()
 
         # Calculate how many days remaining until the target date
         days_remaining = str((datetime(*TARGET_DATE) - datetime.today()).days+1)
