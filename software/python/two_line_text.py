@@ -60,7 +60,7 @@ class TwoLineText(Panel):
     def calculate_font(self, font_file, text, size):
         fnt = Font(font_file, size)
         data = fnt.render_text(text)
-        if data.height > (DISPLAY_HEIGHT / 2) or data.width > DISPLAY_WIDTH:
+        if data.height > (DISPLAY_HEIGHT / 2) or data.width >= DISPLAY_WIDTH:
             size = self.calculate_font(font_file, text, size-1)
         return size
 
