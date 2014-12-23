@@ -47,7 +47,7 @@ class Panel(object):
         self.active_buffer = 0
 
         # Initialise pixel buffer with zeros
-        self.pixel_buffer = numpy.zeros(shape=(DISPLAY_HEIGHT, DISPLAY_WIDTH))
+        self.pixel_buffer = self.get_blank_buffer()
 
         # Allow debug to be set locally unless we are forcing into debug
         # mode because we are not running on the BBB
@@ -58,10 +58,13 @@ class Panel(object):
             return True
 
         # Allocate pixel buffer and initialise to zeros
-        self.pixel_buffer = numpy.zeros(shape=(DISPLAY_HEIGHT, DISPLAY_WIDTH))
+        self.pixel_buffer = self.get_blank_buffer()
 
         # Write it
         self.write_levels()
+
+    def get_blank_buffer(self):
+        return numpy.zeros(shape=(DISPLAY_HEIGHT, DISPLAY_WIDTH))
 
     def write_levels(self):
         if self.debug:
