@@ -96,7 +96,7 @@ clkgen clkgen
   .CLK_OUT1 (clk100),
   .CLK_OUT2 (clk50),
   .CLK_OUT3 (clk20),
-  .CLK_OUT4 (clk10)
+  .CLK_OUT4 (clk25)
 );
 
 
@@ -116,7 +116,7 @@ begin
 end
 assign led[0] = counter50[23];
 
-always @ (posedge clk10 or negedge rst_n)
+always @ (posedge clk25 or negedge rst_n)
 begin
   if (!rst_n) begin
     counter10 <= 0;
@@ -243,7 +243,7 @@ reg mtrx_select;
 reg mtrx_select_y;
 wire mtrx_current_yy;
 
-always @ (posedge clk10 or negedge rst_n)
+always @ (posedge clk25 or negedge rst_n)
 begin
   if (!rst_n) begin
     mtrx_select_y <= 0;
@@ -268,7 +268,7 @@ end
 matrix matrix
 (
     .rst_n (rst_n),
-    .clk   (clk10),
+    .clk   (clk25),
 
     .wr_clk  (clk100),
     .wr      (mtrx_wr),
