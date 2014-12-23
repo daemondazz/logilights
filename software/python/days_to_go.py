@@ -32,7 +32,7 @@ class DaysToGoText(Panel):
 
     def render_panel(self):
 
-        # Build the pixel buffer big enough for the screren
+        # Build the pixel buffer big enough for the screen
         self.pixel_buffer = []
         for row in xrange(DISPLAY_HEIGHT):
             self.pixel_buffer.append([0]*DISPLAY_WIDTH)
