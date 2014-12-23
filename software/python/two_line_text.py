@@ -10,7 +10,7 @@ MESSAGES = [
     ['fonts/RAVIE.TTF', 'PURPLE', 'Wesolych', 'BLUE', 'Swiat', None],
 ]
 
-
+import numpy
 import sys
 import os, os.path
 from time import sleep
@@ -65,17 +65,23 @@ class TwoLineText(Panel):
         return size
 
     def render_line(self, offset, colour, text):
+        # Render the line into a bytearray
         data = self.fnt.render_text(text)
+
+        # Convert the bytearray to a numpy array
+        tmp = numpy.frombuffer(data.pixels, numpy.int8)
+
+        # Turn the numpy array into a ndarray and set pixel colours
+        tmp = numpy.multiply(tmp.reshape(data.height, data.width), colour)
+
+        # Calculate how far on the line we are shifting it (to center)
         gap_above = int((DISPLAY_HEIGHT/2 - data.height) / 2)
-        for row in range(data.height):
-            row_num = row + offset + gap_above
-            gap_left = int((DISPLAY_WIDTH - data.width) / 2)
-            row_start = row * data.width
-            row_end = row_start + DISPLAY_WIDTH
-            pixels = data.pixels[row_start:row_end]
-            for col in xrange(data.width):
-                if pixels[col]:
-                    self.pixel_buffer[row_num,gap_left+col] = colour
+        gap_left = int((DISPLAY_WIDTH - data.width) / 2)
+
+        # Overlay tmp buffer onto pixel buffer
+        x1, x2 = gap_left, gap_left + data.width
+        y1, y2 = offset + gap_above, offset + gap_above + data.height
+        self.pixel_buffer[y1:y2,x1:x2] = tmp
         
 
 if __name__ == '__main__':
