@@ -7,6 +7,7 @@ ROWS_COUNTER = 1
 ROWS_EVENT = 2
 ROWS_DATETIME = 4
 
+import numpy
 import sys
 import os, os.path
 from datetime import datetime
@@ -92,20 +93,33 @@ class DaysToGoText(Panel):
         self.font_cache[key] = fnt
 
     def render_text(self, text, h_offset, v_offset, key, colour, rows):
+        # Render the text into a bytearray
         data = self.font_cache[key].render_text(text)
+
+        # Convert the bytearray to a numpy array
+        tmp = numpy.frombuffer(data.pixels, numpy.int8)
+
+        # Turn the numpy array into an ndarray and set pixel colours
+        tmp = numpy.multiply(tmp.reshape(data.height, data.width), colour)
+
+        # Calculate how far down the panel to render the text to make it
+        # vertically centered
         gap_above = int((DISPLAY_HEIGHT/rows - data.height) / 2)
+
         # If h_offset is negative, we're aligning on the right edge
         if h_offset < 0:
             h_offset = DISPLAY_WIDTH - data.width - abs(h_offset)#  + 1
+
+        # If v_offset is negative, we're aligning to the bottom edge
         if v_offset < 0:
             v_offset = DISPLAY_HEIGHT - data.height - abs(v_offset) + 1
-        for row in xrange(data.height):
-            row_num = row + v_offset + gap_above
-            row_start = row * data.width
-            pixels = data.pixels[row_start:row_start+data.width]
-            for col in xrange(data.width):
-                if pixels[col]:
-                    self.pixel_buffer[row_num][h_offset+col] = colour
+
+        # Overlay tmp buffer onto pixel buffer
+        x1, x2 = h_offset, h_offset + data.width
+        y1, y2 = v_offset + gap_above, v_offset + gap_above + data.height
+        self.pixel_buffer[y1:y2,x1:x2] = tmp
+
+        # Return the bytearray we rendered so caller can use height/width
         return data
 
 
