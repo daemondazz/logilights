@@ -1,3 +1,4 @@
+import numpy
 import sys
 from struct import pack, unpack
 from random import shuffle
@@ -12,7 +13,7 @@ except ImportError:
     DEBUG = True
 
 
-DISPLAY_WIDTH = 94
+DISPLAY_WIDTH = 96
 DISPLAY_HEIGHT = 32
 
 FPGA_PANEL_ADDR_REG = 0x0008
@@ -41,19 +42,23 @@ COLOURS = COLOUR_ARRAY.values()
 
 class Panel(object):
     def __init__(self, debug=False):
+
+        # Set buffer 0 to be the active buffer
         self.active_buffer = 0
-        self.pixel_buffer = []
+
+        # Initialise pixel buffer with zeros
+        self.pixel_buffer = numpy.zeros(shape=(DISPLAY_HEIGHT, DISPLAY_WIDTH))
+
+        # Allow debug to be set locally unless we are forcing into debug
+        # mode because we are not running on the BBB
         self.debug = DEBUG or debug
 
     def blank_display(self):
         if self.debug:
             return True
 
-        self.pixel_buffer = []
-
-        # Fill it with zeros
-        for x in xrange(DISPLAY_HEIGHT):
-            self.pixel_buffer.append([0] * DISPLAY_WIDTH)
+        # Allocate pixel buffer and initialise to zeros
+        self.pixel_buffer = numpy.zeros(shape=(DISPLAY_HEIGHT, DISPLAY_WIDTH))
 
         # Write it
         self.write_levels()
@@ -69,13 +74,13 @@ class Panel(object):
             base = FPGA_BUFFER2_OFFSET
 
         # Write the data
-        for row in xrange(DISPLAY_HEIGHT):
+        for row in xrange(self.pixel_buffer.shape[0]):
             self.write_word(FPGA_PANEL_ADDR_REG, (base + (128 * row)))
-            for col in xrange(DISPLAY_WIDTH):
+            for col in xrange(self.pixel_buffer.shape[1]):
                 self.write_word(FPGA_PANEL_DATA_REG,
-                                self.pixel_buffer[row][col])
+                                self.pixel_buffer[row,col])
 
-        # Switch the active display buffer 
+        # Switch the active display buffer
         if self.active_buffer == 0:
             self.write_word(FPGA_PANEL_BUFFER_REG, 0x0000)
             self.active_buffer = 1
