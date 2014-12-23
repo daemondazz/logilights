@@ -81,7 +81,7 @@ class Panel(object):
             self.write_word(FPGA_PANEL_ADDR_REG, (base + (128 * row)))
             for col in xrange(self.pixel_buffer.shape[1]):
                 self.write_word(FPGA_PANEL_DATA_REG,
-                                self.pixel_buffer[row,col])
+                                int(self.pixel_buffer[row,col]))
 
         # Switch the active display buffer
         if self.active_buffer == 0:
