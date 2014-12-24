@@ -33,6 +33,11 @@ class DaysToGoText(Panel):
         self.show_colon = True
         self.target_date = [int(n) for n in target_date.split('-')]
 
+        # Determine the size for the fonts
+        self.calculate_font('31', key='counter', rows=ROWS_COUNTER)
+        self.calculate_font(EVENT_NAME[0], key='event_name', rows=ROWS_EVENT)
+        self.calculate_font('00:00', key='date_time', rows=1, size=16, font_file=font_file2)
+
     def render_panel(self):
 
         # Build the pixel buffer big enough for the screen
@@ -46,13 +51,6 @@ class DaysToGoText(Panel):
         # Pluralise firt word of event name
         if int(days_remaining) != 1 and EVENT_NAME[0][-1] != 'S':
             EVENT_NAME[0] += 'S'
-
-        # Determine the size for the fonts
-        self.calculate_font(days_remaining, key='counter', rows=ROWS_COUNTER)
-        for word in EVENT_NAME:
-            self.calculate_font(word, key='event_name', rows=ROWS_EVENT)
-        self.calculate_font(current_time, key='date_time', rows=1, size=16, font_file=font_file2)
-        self.calculate_font(current_time, key='date_time', rows=1, size=16, font_file=font_file2)
 
         # Indent from the left edge of the screen
         h_offset = 5
