@@ -85,7 +85,8 @@ if __name__ == '__main__':
     if len(sys.argv) == 1:
         print 'ERROR: Require name of JSON file containing messages to render'
         sys.exit(1)
-    with open(sys.argv[1], 'rb') as fh:
+    msg_file = os.path.join(os.path.dirname(__file__), '..', '..', 'messages', sys.argv[1])
+    with open(msg_file, 'rb') as fh:
         data = json.load(fh)
     p = TwoLineText(data['messages'])
     while True:
