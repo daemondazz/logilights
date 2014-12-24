@@ -85,8 +85,10 @@ if __name__ == '__main__':
     if len(sys.argv) == 1:
         print 'ERROR: Require name of JSON file containing messages to render'
         sys.exit(1)
-    p = TwoLineText(json.load(open(sys.argv[1], 'rb')))
+    with open(sys.argv[1], 'rb') as fh:
+        data = json.load(fh)
+    p = TwoLineText(data['messages'])
     while True:
         p.render_message()
         p.rotate_messages()
-        sleep(5)
+        sleep(data['sleep'])

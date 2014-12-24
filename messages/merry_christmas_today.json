@@ -1,7 +1,10 @@
-[
-  ["fonts/COOPBL.TTF", "RED", "Merry", "GREEN", "Christmas", null],
-  ["fonts/COOPBL.TTF", "GREEN", "Merry", "PURPLE", "Christmas", null],
-  ["fonts/COOPBL.TTF", "PURPLE", "Merry", "BLUE", "Christmas", null],
-  ["fonts/COOPBL.TTF", "BLUE", "Merry", "YELLOW", "Christmas", null],
-  ["fonts/COOPBL.TTF", "YELLOW", "Merry", "RED", "Christmas", null]
-]
+{
+  "messages": [
+    [ "fonts/COOPBL.TTF", "RED", "Merry", "GREEN", "Christmas", null ],
+    [ "fonts/COOPBL.TTF", "GREEN", "Merry", "PURPLE", "Christmas", null ],
+    [ "fonts/COOPBL.TTF", "PURPLE", "Merry", "BLUE", "Christmas", null ],
+    [ "fonts/COOPBL.TTF", "BLUE", "Merry", "YELLOW", "Christmas", null ],
+    [ "fonts/COOPBL.TTF", "YELLOW", "Merry", "RED", "Christmas", null ]
+  ],
+  "sleep": 1
+}
