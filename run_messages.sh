@@ -14,7 +14,6 @@ seconds_till() {
 
 # Make sure we cleanup children
 trap cleanup SIGINT
-trap cleanup SIGKILL
 trap cleanup SIGTERM
 
 TIMEOUT="timeout --preserve-status -k 5"
