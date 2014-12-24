@@ -119,11 +119,11 @@ class TestPattern1(Panel):
 
     def next_frame(self):
         global COLOURS
-        self.pixel_buffer = []
+        self.pixel_buffer = self.get_blank_buffer()
         COLOURS.append(COLOURS.pop(0))
         for x in xrange(DISPLAY_HEIGHT):
             row = [COLOURS[x % len(COLOURS)]] * DISPLAY_WIDTH
-            self.pixel_buffer.append(row)
+            self.pixel_buffer[x] = row
         self.write_levels()
 
 
@@ -133,11 +133,11 @@ class TestPattern2(Panel):
 
     def next_frame(self):
         global COLOURS
-        self.pixel_buffer = []
+        self.pixel_buffer = self.get_blank_buffer()
         shuffle(COLOURS)
         for x in xrange(DISPLAY_HEIGHT):
             row = [COLOURS[x % len(COLOURS)]] * DISPLAY_WIDTH
-            self.pixel_buffer.append(row)
+            self.pixel_buffer[x] = row
         self.write_levels()
 
 
