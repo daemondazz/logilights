@@ -21,11 +21,14 @@ from logilights.panel import Panel
 
 
 class TwoLineText(Panel):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, messages, *args, **kwargs):
         super(TwoLineText, self).__init__(*args, **kwargs)
+        self.messages = messages
 
-    def render_message(self, font_file, colour1, text1, colour2, text2, prerendered):
-        global MESSAGES
+    def render_message(self):
+
+        # Split out current message
+        font_file, colour1, text1, colour2, text2, prerendered = self.messages[0]
 
         # If the frame has been pre-rendered, just show it
         if not prerendered is None:
@@ -52,7 +55,7 @@ class TwoLineText(Panel):
         self.render_line(16, COLOUR_ARRAY.get(colour2, 'RED'), text2)
 
         # Save the current frame to the prerender spot in the first MESSAGE
-        MESSAGES[0][5] = self.pixel_buffer
+        self.messages[0][5] = self.pixel_buffer
 
         # Write Levels
         self.write_levels()
@@ -82,11 +85,14 @@ class TwoLineText(Panel):
         x1, x2 = gap_left, gap_left + data.width
         y1, y2 = offset + gap_above, offset + gap_above + data.height
         self.pixel_buffer[y1:y2,x1:x2] = tmp
-        
+
+    def rotate_messages(self):
+        self.messages.append(self.messages.pop(0))
+
 
 if __name__ == '__main__':
-    p = TwoLineText()
+    p = TwoLineText(MESSAGES)
     while True:
-        p.render_message(*MESSAGES[0])
-        MESSAGES.append(MESSAGES.pop(0))
+        p.render_message()
+        p.rotate_messages()
         sleep(5)
