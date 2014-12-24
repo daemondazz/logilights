@@ -1,15 +1,6 @@
 #!/usr/bin/env python
 
-
-MESSAGES = [
-    ['fonts/HARNGTON.TTF', 'YELLOW', 'Seasons', 'YELLOW', 'Greetings', None],
-    ['fonts/OLDENGL.TTF', 'RED', 'Merry', 'GREEN', 'Christmas', None],
-    ['fonts/COOPBL.TTF', 'BLUE', 'Joyeux', 'YELLOW', 'Noel', None],
-    ['fonts/yataghan.ttf', 'AQUA', 'Feliz', 'PURPLE', 'Navidad', None],
-    ['fonts/HARNGTON.TTF', 'GREEN', 'Sheng Dan', 'RED', 'Kuai Le', None],
-    ['fonts/RAVIE.TTF', 'PURPLE', 'Wesolych', 'BLUE', 'Swiat', None],
-]
-
+import json
 import numpy
 import sys
 import os, os.path
@@ -91,7 +82,10 @@ class TwoLineText(Panel):
 
 
 if __name__ == '__main__':
-    p = TwoLineText(MESSAGES)
+    if len(sys.argv) == 1:
+        print 'ERROR: Require name of JSON file containing messages to render'
+        sys.exit(1)
+    p = TwoLineText(json.load(open(sys.argv[1], 'rb')))
     while True:
         p.render_message()
         p.rotate_messages()
