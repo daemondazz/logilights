@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-TARGET_DATE = [2014, 12, 25]
 EVENT_NAME = ['SLEEP', 'LEFT']
 
 ROWS_COUNTER = 1
@@ -26,11 +25,12 @@ font_file2 = os.path.join(os.path.dirname(__file__),
 
 
 class DaysToGoText(Panel):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, target_date, *args, **kwargs):
         super(DaysToGoText, self).__init__(*args, **kwargs)
         self.font_cache = {}
         self.font_file = font_file
         self.show_colon = True
+        self.target_date = [int(n) for n in target_date.split('-')]
 
     def render_panel(self):
 
@@ -38,7 +38,7 @@ class DaysToGoText(Panel):
         self.pixel_buffer = self.get_blank_buffer()
 
         # Calculate how many days remaining until the target date
-        days_remaining = str((datetime(*TARGET_DATE) - datetime.today()).days+1)
+        days_remaining = str((datetime(*self.target_date) - datetime.today()).days+1)
         current_date = datetime.now().strftime('%d-%m')
         current_time = datetime.now().strftime('%H:%M')
 
@@ -124,7 +124,10 @@ class DaysToGoText(Panel):
 
 
 if __name__ == '__main__':
-    p = DaysToGoText()
+    if len(sys.argv) == 1:
+        print 'Require countdown target date in YYYY-MM-DD format'
+        sys.exit(1)
+    p = DaysToGoText(sys.argv[1])
     while True:
         p.render_panel()
         now = time()
