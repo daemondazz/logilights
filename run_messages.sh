@@ -9,14 +9,7 @@ cleanup() {
 seconds_till() {
 	local current_ts=$( date +%s )
 	local end_ts=$1
-	TIME=$(( $end_ts - $current_ts))
-	# Hack for 5 minutes offset from quarter hour chime
-	# If we've already passed the 10 minutes offset from the last quarter hour
-	# chime, skip to the next one
-	if [[ ${TIME} -le 0 ]]; then
-		TIME=$(( $TIME + 900))
-	fi
-	echo $TIME
+	echo $(( $end_ts - $current_ts))
 }
 
 # Make sure we cleanup children
@@ -45,16 +38,32 @@ while /bin/true; do
 		# Between xx:10 and xx:25 show seasons greetings
 		# Between xx:25 and xx:40 show sleeps left
 		# Between xx:40 and xx:55 show seasons greetings
-		MIDNIGHT=$( date -d "00:00:00" +%s )
-		NEXT_ROLLOVER=$(( $( date +%s) - ($(date +%s) % (15 * 60)) + 900 ))
+		if [[ ${MIN} -lt 10 ]]; then
+			SCRIPT="days"
+		elif [[ ${MIN} -lt 25 ]]; then
+			SCRIPT="greetings"
+		elif [[ ${MIN} -lt 40 ]]; then
+			SCRIPT="days"
+		elif [[ ${MIN} -lt 55 ]]; then
+			SCRIPT="greetings"
+		else
+			SCRIPT="days"
+		fi
 
-#		echo "NOW=$(date +%s), NEXT=${NEXT_ROLLOVER}"
+		# Work out the next time we have to switch panels
+		# If we've already passed the 10 minutes offset from the last quarter hour
+		# chime, skip to the next one
+		NEXT_ROLLOVER=$(( $( date +%s) - ($(date +%s) % (15 * 60)) + 600 ))
+		if [[ $( seconds_till ${NEXT_ROLLOVER} ) -le 0 ]]; then
+			NEXT_ROLLOVER=$(( ${NEXT_ROLLOVER} + 900))
+		fi
 
-		if [[ "$(( ((${NEXT_ROLLOVER} - ${MIDNIGHT}) / 900) % 2 ))" -eq "0" ]]; then
-			$TIMEOUT $( seconds_till ${NEXT_ROLLOVER}) \
+		# Run the chosen script
+		if [[ "${SCRIPT}" == "days" ]]; then
+			echo $TIMEOUT $( seconds_till ${NEXT_ROLLOVER}) \
 			         software/python/days_to_go.py ${YEAR}-12-25
 		else
-			$TIMEOUT $( seconds_till ${NEXT_ROLLOVER}) \
+			echo $TIMEOUT $( seconds_till ${NEXT_ROLLOVER}) \
 			         software/python/two_line_text.py merry_christmas_languages.json
 		fi
 
