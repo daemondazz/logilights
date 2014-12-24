@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Make sure we are in the base directory of the program
+cd $( dirname $0 )
+
 cleanup() {
 	echo "running cleanup"
 	killall timeout
