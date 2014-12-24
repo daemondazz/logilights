@@ -28,6 +28,7 @@ class DaysToGoText(Panel):
     def __init__(self, target_date, *args, **kwargs):
         super(DaysToGoText, self).__init__(*args, **kwargs)
         self.font_cache = {}
+        self.render_cache = {}
         self.font_file = font_file
         self.show_colon = True
         self.target_date = [int(n) for n in target_date.split('-')]
@@ -93,8 +94,19 @@ class DaysToGoText(Panel):
         self.font_cache[key] = fnt
 
     def render_text(self, text, h_offset, v_offset, key, colour, rows):
-        # Render the text into a bytearray
-        data = self.font_cache[key].render_text(text)
+
+        # Make sure the font size key exists in the render cache
+        if not key in self.render_cache:
+            self.render_cache[key] = {}
+
+        # We've already rendered this text at this font-size, lets reuse it
+        if text in self.render_cache[key]:
+            data = self.render_cache[key][text]
+
+        # Otherwise render the text into a bytearray and save it
+        else:
+            data = self.font_cache[key].render_text(text)
+            self.render_cache[key][text] = data
 
         # Convert the bytearray to a numpy array
         tmp = numpy.frombuffer(data.pixels, numpy.int8)
