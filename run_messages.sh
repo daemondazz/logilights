@@ -39,7 +39,7 @@ while /bin/true; do
 
 	# If we are in December and it's before Christmas, show the seasons greetings
 	# and sleeps remaining panels
-	elif [[ "${MONTH}" -eq "12" && "${DAY}" -lt "25" ]]; then
+	elif [[ ${MONTH} -eq 12 && ${DAY} -lt 25 ]]; then
 
 		# Between ww:55 and xx:10 show sleeps left
 		# Between xx:10 and xx:25 show seasons greetings
@@ -60,7 +60,7 @@ while /bin/true; do
 
 	# If we are in December and it's after Christmas, just show the seasons
 	# greetings panels
-	elif [ "${MONTH}" -eq "12" && "${DAY}" -gt "25" ]; then
+	elif [[ ${MONTH} -eq 12 && ${DAY} -gt 25 ]]; then
 		$TIMEOUT $( seconds_till $( date -d "tomorrow 00:00:00" +%s )) \
 		         software/python/two_line_text.py merry_christmas_languages.json
 
