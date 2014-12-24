@@ -7,7 +7,7 @@ cleanup() {
 }
 
 run_cmd_timeout() {
-	timeout --preserve-status -k 5 $* &
+	timeout -k 5 $* &
 	PID=$!
 	wait $PID
 }
