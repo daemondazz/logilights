@@ -6,6 +6,12 @@ cleanup() {
 	exit
 }
 
+run_cmd_timeout() {
+	timeout --preserve-status -k 5 $* &
+	PID=$!
+	wait $PID
+}
+
 seconds_till() {
 	local current_ts=$( date +%s )
 	local end_ts=$1
@@ -16,8 +22,6 @@ seconds_till() {
 trap cleanup SIGINT
 trap cleanup SIGTERM
 
-TIMEOUT="timeout --preserve-status -k 5"
-
 # Keep running forever
 while /bin/true; do
 
@@ -26,7 +30,7 @@ while /bin/true; do
 
 	# If it's Christmas day, just run our Merry Christmas panel until midnight
 	if [[ "${MONTH}-${DAY}" == "12-25" ]]; then
-		$TIMEOUT $( seconds_till $( date -d "tomorrow 00:00:00" +%s )) \
+		run_cmd_timeout $( seconds_till $( date -d "tomorrow 00:00:00" +%s )) \
 		         software/python/two_line_text.py merry_christmas_today.json
 
 	# If we are in December and it's before Christmas, show the seasons greetings
@@ -59,22 +63,22 @@ while /bin/true; do
 
 		# Run the chosen script
 		if [[ "${SCRIPT}" == "days" ]]; then
-			echo $TIMEOUT $( seconds_till ${NEXT_ROLLOVER}) \
+			run_cmd_timeout $( seconds_till ${NEXT_ROLLOVER}) \
 			         software/python/days_to_go.py ${YEAR}-12-25
 		else
-			echo $TIMEOUT $( seconds_till ${NEXT_ROLLOVER}) \
+			run_cmd_timeout $( seconds_till ${NEXT_ROLLOVER}) \
 			         software/python/two_line_text.py merry_christmas_languages.json
 		fi
 
 	# If we are in December and it's after Christmas, just show the seasons
 	# greetings panels
 	elif [[ ${MONTH} -eq 12 && ${DAY} -gt 25 ]]; then
-		$TIMEOUT $( seconds_till $( date -d "tomorrow 00:00:00" +%s )) \
+		run_cmd_timeout $( seconds_till $( date -d "tomorrow 00:00:00" +%s )) \
 		         software/python/two_line_text.py merry_christmas_languages.json
 
 	# Otherwise, if it's not December, show current time and temperature panel
 	else
-		$TIMEOUT $( seconds_till $( date -d "tomorrow 00:00:00" +%s )) \
+		run_cmd_timeout $( seconds_till $( date -d "tomorrow 00:00:00" +%s )) \
 		         software/python/time_and_temperature.py
 
 	fi
